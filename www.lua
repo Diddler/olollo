@@ -40,7 +40,7 @@ end
 
 modules.Battle:WildBattle(nil, next(regionData.Encounters)):Wait()
 network:BindEvent("RelayBattle", function(actions, battleData)
-    if attacking then
+if attacking then
         for i, v in next, actions do
             if v.Action == "Dialogue" then
                 local text = v.Text
@@ -64,18 +64,7 @@ network:BindEvent("RelayBattle", function(actions, battleData)
         end
         return
     end
-    for i, v in next, actions do
-        if v.Action == "Transition" then
-            oldRelay(actions, battleData)
-            spawn()
-            return
-        end
-    end
-    return oldRelay(actions, battleData)
-end)
-modules.Battle:WildBattle(nil, next(regionData.Encounters)):Wait()
-network:BindEvent("RelayBattle", function(actions, battleData)
-    if running then
+    elseif running then
         for i, v in next, actions do
             if v.Action == "Dialogue" then
                 local text = v.Text
