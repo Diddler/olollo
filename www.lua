@@ -25,7 +25,7 @@ local oldStart = networkBinds.StartBattle
 local oldRelay = networkBinds.RelayBattle
 
 local plrName = game:GetService("Players").LocalPlayer.Name
-local running, healOverride
+local running, healOverride, attacking
 
 
 local function spawn(found)
