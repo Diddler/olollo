@@ -25,7 +25,7 @@ local oldStart = networkBinds.StartBattle
 local oldRelay = networkBinds.RelayBattle
 
 local plrName = game:GetService("Players").LocalPlayer.Name
-local running, healOverride, attacking
+local running, healOverride
 
 
 local function spawn(found)
@@ -41,23 +41,7 @@ end
 
 modules.Battle:WildBattle(nil, next(regionData.Encounters)):Wait()
 network:BindEvent("RelayBattle", function(actions, battleData)
-if attacking then
-        for i, v in next, actions do
-            if v.Action == "Dialogue" then
-                local text = v.Text
-                if text:match("What will .+ do?") then
-                    local ally = battleData.Out1[1]
-                    network:post("BattleAction", {
-                        {
-                            ActionType = "Attack",
-                            Action = ally.Moves[1].Name,
-                            Target = battleData.Out2[1].ID,
-                            User = ally.ID
-                        }
-                    })
-                    network:post(plrName .. "Ready")
-                end
-    elseif running then
+    if running then
         for i, v in next, actions do
             if v.Action == "Dialogue" then
                 local text = v.Text
@@ -79,14 +63,15 @@ if attacking then
         end
         return
     end
-elseif v.Action == "Transition" then
-                attacking = false
-                network:post(plrName .. "Over")
-                spawn()
-            end
+    for i, v in next, actions do
+        if v.Action == "Transition" then
+            oldRelay(actions, battleData)
+            spawn(true)
+            return
         end
-        return
     end
+    return oldRelay(actions, battleData)
+end)
 network:BindEvent("StartBattle", function(battleData)
     local doodle = battleData.Out2[1]
     local doodleName = doodle.Name
@@ -103,9 +88,6 @@ network:BindEvent("StartBattle", function(battleData)
         warn("FOUND:")
         warn(doodleName, doodle.Star, doodle.Ability == doodle.Info.HiddenAbility, "Equips:")
         foreach(equips, print)
-	print("Killing " .. doodleName)
-        attacking = true
-        network:post(plrName .. "InitialReady")
     else
         print("Ran from " .. doodleName)
         running = true
