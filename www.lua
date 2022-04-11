@@ -54,14 +54,6 @@ if attacking then
                     })
                     network:post(plrName .. "Ready")
                 end
-            elseif v.Action == "Transition" then
-                attacking = false
-                network:post(plrName .. "Over")
-                spawn()
-            end
-        end
-        return
-    end
     elseif running then
         for i, v in next, actions do
             if v.Action == "Dialogue" then
@@ -84,15 +76,14 @@ if attacking then
         end
         return
     end
-    for i, v in next, actions do
-        if v.Action == "Transition" then
-            oldRelay(actions, battleData)
-            spawn(true)
-            return
+elseif v.Action == "Transition" then
+                attacking = false
+                network:post(plrName .. "Over")
+                spawn()
+            end
         end
+        return
     end
-    return oldRelay(actions, battleData)
-end)
 network:BindEvent("StartBattle", function(battleData)
     local doodle = battleData.Out2[1]
     local doodleName = doodle.Name
