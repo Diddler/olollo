@@ -28,15 +28,13 @@ local plrName = game:GetService("Players").LocalPlayer.Name
 local running, healOverride, attacking
 
 
-local function spawn(found)
-    if found or healOverride then
-        healOverride = false
-        network:post("PlayerData", "Heal")
-    end
+local function spawn()
     if regionData.Encounters then
+        network:post("PlayerData", "Heal")
         network:post("RequestWild", regionData.ChunkName or regionData.Reference, (next(regionData.Encounters)))
     end
 end
+
 
 modules.Battle:WildBattle(nil, next(regionData.Encounters)):Wait()
 network:BindEvent("RelayBattle", function(actions, battleData)
@@ -128,4 +126,4 @@ network:BindEvent("StartBattle", function(battleData)
     end
 end)
 
-spawn(true)
+spawn()
