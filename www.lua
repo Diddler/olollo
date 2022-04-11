@@ -30,7 +30,6 @@ local running, healOverride, attacking
 
 local function spawn()
     if regionData.Encounters then
-        network:post("PlayerData", "Heal")
         network:post("RequestWild", regionData.ChunkName or regionData.Reference, (next(regionData.Encounters)))
     end
 end
