@@ -120,4 +120,4 @@ network:BindEvent("StartBattle", function(battleData)
     end
 end)
 
-spawn()
+spawn(true)
